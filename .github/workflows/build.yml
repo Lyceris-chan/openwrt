@@ -26,8 +26,8 @@ jobs:
 
     - name: Set up Git user
       run: |
-        git config user.email "52329982+Lyceris-chan@users.noreply.github.com"
-        git config user.name "Lyceris-chan"
+        git config --global user.email "52329982+Lyceris-chan@users.noreply.github.com"
+        git config --global user.name "Lyceris-chan"
 
 
     - name: Add support for Mercusys MR70X
