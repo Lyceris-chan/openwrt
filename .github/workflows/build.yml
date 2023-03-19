@@ -60,8 +60,40 @@ jobs:
         cd openwrt
         make -j "$(nproc)"
 
-    - name: Upload firmware
-      uses: actions/upload-artifact@v2
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
+        tag_name: ${{ github.sha }}
+        release_name: OpenWrt Firmware Release - $(date '+%Y-%m-%d %H:%M:%S') - $(git rev-parse --short HEAD)
+        body: |
+          This is the release of OpenWrt firmware built from commit $(git rev-parse --short HEAD).
+        draft: false
+        prerelease: false
+
+    - name: Create Release
+    - uses: actions/create-release@v1
+    - env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.sha }}
+        release_name: OpenWrt Firmware Release $(date +"%Y-%m-%d %H:%M:%S") - ${{ github.sha }}
+        body: |
+          This is the release of the OpenWrt firmware built from commit hash: ${{ github.sha }}.
+        draft: false
+        prerelease: false
         name: openwrt-firmware
-        path: openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x*
+        files: |
+          config.buildinfo
+          feeds.buildinfo
+          openwrt-ramips-mt7621-mercusys_mr70x-initramfs-kernel.bin
+          openwrt-ramips-mt7621-mercusys_mr70x-squashfs-factory.bin
+          openwrt-ramips-mt7621-mercusys_mr70x-squashfs-sysupgrade.bin
+          openwrt-ramips-mt7621-mercusys_mr70x.manifest
+          profiles.json
+          sha256sums
+          version.buildinfo
+
+
