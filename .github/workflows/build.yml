@@ -49,8 +49,11 @@ jobs:
     - name: Setup CCache
       uses: stupidloud/cachewrtbuild@main
       with:
-        ccache: 'true'
+        ccache: true
         prefix: openwrt
+        toolchain: true
+        skip: false
+        clean: false
 
     - name: Build OpenWrt firmware
       run: |
