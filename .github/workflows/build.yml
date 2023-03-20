@@ -58,38 +58,35 @@ jobs:
         cd openwrt
         make -j "$(nproc)"
 
-    - name: Get OpenWrt Git Hash
+    - name: Get Git Hashes and Feed Info
       run: |
         cd openwrt
-        echo "OpenWrt Git Hash: $(git rev-parse HEAD)" >> release_info.txt
-        echo "OpenWrt Git Hash: $(git rev-parse HEAD)" >> release_title_info.txt
-
-    - name: Get LuCI Git Hash
-      run: |
-        cd openwrt/package/feeds/luci
-        echo "LuCI Git Hash: $(git rev-parse HEAD)" >> release_info.txt
-
-    - name: Get Feeds Info
-      run: |
-        cat openwrt/bin/targets/ramips/mt7621/feeds.buildinfo >> release_info.txt
+        openwrt_hash=$(git rev-parse HEAD~1)
+        luci_hash=$(git -C package/feeds/luci rev-parse HEAD)
+        feeds_info=$(cat bin/targets/ramips/mt7621/feeds.buildinfo)
+        echo "OpenWrt Git Hash: $openwrt_hash" > release_info.txt
+        echo "LuCI Git Hash: $luci_hash" >> release_info.txt
+        echo "$feeds_info" >> release_info.txt
+        echo "OpenWrt Git Hash: $openwrt_hash" > release_title.txt
 
     - name: Save Release Info
       run: |
+        cd openwrt
         cat release_info.txt
         echo "::set-output name=release_info::$(cat release_info.txt)"
       id: save_release_info
 
-    - name: Save Release Title Info
+    - name: Save Release Title
       run: |
-        cat release_title_info.txt
-        echo "::set-output name=release_title_info::$(cat release_title_info.txt)"
-      id: save_release_title_info
+        cat release_title.txt
+        echo "::set-output name=release_title::$(cat release_title.txt)"
+      id: save_release_title
 
     - name: Automatic Release
       uses: marvinpinto/action-automatic-releases@latest
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        automatic_release_tag: " MR70X_${{ steps.save_release_info.outputs.release_title_info }}"
+        automatic_release_tag: "MR70X_${{ steps.save_release_title.outputs.release_title }}"
         prerelease: false
         title: "Development Build"
         files: |
@@ -102,5 +99,4 @@ jobs:
           openwrt/bin/targets/ramips/mt7621/profiles.json
           openwrt/bin/targets/ramips/mt7621/sha256sums
           openwrt/bin/targets/ramips/mt7621/version.buildinfo
-          release_info.txt
-
+          openwrt/release_info.txt
