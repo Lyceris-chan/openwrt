@@ -51,7 +51,7 @@ jobs:
         prefix: openwrt
         toolchain: true
         skip: false
-        clean: false
+        clean: true
 
     - name: Build OpenWrt Firmware
       run: |
