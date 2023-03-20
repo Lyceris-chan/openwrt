@@ -1,0 +1,103 @@
+name: Build OpenWrt for Mercusys MR70X
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential clang flex bison g++ gawk gcc-multilib g++-multilib \
+        gettext git libncurses5-dev libssl-dev python3-distutils rsync unzip zlib1g-dev \
+        file wget ccache
+
+    - name: Clone OpenWrt Source Code
+      run: |
+        git clone --depth 1 https://github.com/openwrt/openwrt.git
+
+    - name: Set Up Git User
+      run: |
+        git config --global user.email "52329982+Lyceris-chan@users.noreply.github.com"
+        git config --global user.name "Lyceris-chan"
+
+    - name: Add Support for Mercusys MR70X
+      run: |
+        cd openwrt
+        git fetch https://github.com/nicefile/openwrt-vector mr70x
+        git cherry-pick 04b9b13a8de5116a97d79a2f5b18163f799f10aa
+
+    - name: Update and Install OpenWrt Feeds
+      run: |
+        cd openwrt
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
+
+    - name: Prepare OpenWrt Configuration
+      run: |
+        cd openwrt
+        cp -f ../.config .config
+
+    - name: Set Up CCache
+      uses: stupidloud/cachewrtbuild@main
+      with:
+        ccache: 'true'
+        prefix: 'openwrt'
+        toolchain: 'true'
+        skip: 'false'
+        clean: 'false'
+
+    - name: Build OpenWrt Firmware
+      run: |
+        cd openwrt
+        make -j "$(nproc)"
+
+    - name: Get Git Hashes and Feed Info
+      run: |
+        cd openwrt
+        openwrt_hash=$(git rev-parse HEAD~1)
+        luci_hash=$(git -C package/feeds/luci rev-parse HEAD)
+        feeds_info=$(cat bin/targets/ramips/mt7621/feeds.buildinfo)
+        echo "OpenWrt Git Hash: $openwrt_hash" > release_info.txt
+        echo "LuCI Git Hash: $luci_hash" >> release_info.txt
+        echo "$feeds_info" >> release_info.txt
+        echo "$openwrt_hash" > release_title.txt
+
+    - name: Save Release Info
+      run: |
+        cd openwrt
+        cat release_info.txt
+        echo "::set-output name=release_info::$(cat release_info.txt)"
+      id: save_release_info
+
+    - name: Save Release Title
+      run: |
+        cd openwrt
+        cat release_title.txt
+        echo "::set-output name=release_title::$(cat release_title.txt)"
+      id: save_release_title
+
+    - name: Automatic Release
+      uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        automatic_release_tag: "MR70X_${{ steps.save_release_title.outputs.release_title }}"
+        prerelease: false
+        title: "Development Build"
+        files: |
+          openwrt/bin/targets/ramips/mt7621/config.buildinfo
+          openwrt/bin/targets/ramips/mt7621/feeds.buildinfo
+          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-initramfs-kernel.bin
+          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-squashfs-factory.bin
+          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-squashfs-sysupgrade.bin
+          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x.manifest
+          openwrt/bin/targets/ramips/mt7621/profiles.json
+          openwrt/bin/targets/ramips/mt7621/sha256sums
+          openwrt/bin/targets/ramips/mt7621/version.buildinfo
+          openwrt/release_info.txt
