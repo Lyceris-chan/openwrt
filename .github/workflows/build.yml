@@ -51,7 +51,7 @@ jobs:
         prefix: openwrt
         toolchain: true
         skip: false
-        clean: true
+        clean: false
 
     - name: Build OpenWrt Firmware
       run: |
@@ -70,7 +70,7 @@ jobs:
 
     - name: Get Feeds Info
       run: |
-        cat openwrt/feeds.buildinfo >> release_info.txt
+        cat openwrt/bin/targets/ramips/mt7621/feeds.buildinfo >> release_info.txt
 
     - name: Save Release Info
       run: |
@@ -99,14 +99,14 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: |
-          openwrt/config.buildinfo
-          openwrt/feeds.buildinfo
-          openwrt/openwrt-ramips-mt7621-mercusys_mr70x-initramfs-kernel.bin
-          openwrt/openwrt-ramips-mt7621-mercusys_mr70x-squashfs-factory.bin
-          openwrt/openwrt-ramips-mt7621-mercusys_mr70x-squashfs-sysupgrade.bin
-          openwrt/openwrt-ramips-mt7621-mercusys_mr70x.manifest
-          openwrt/profiles.json
-          openwrt/sha256sums
-          openwrt/version.buildinfo
+          openwrt/bin/targets/ramips/mt7621/config.buildinfo
+          openwrt/bin/targets/ramips/mt7621/feeds.buildinfo
+          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-initramfs-kernel.bin
+          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-squashfs-factory.bin
+          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-squashfs-sysupgrade.bin
+          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x.manifest
+          openwrt/bin/targets/ramips/mt7621/profiles.json
+          openwrt/bin/targets/ramips/mt7621/sha256sums
+          openwrt/bin/targets/ramips/mt7621/version.buildinfo
           release_info.txt
 
