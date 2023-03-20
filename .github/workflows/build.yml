@@ -78,6 +78,7 @@ jobs:
 
     - name: Save Release Title
       run: |
+        cd openwrt
         cat release_title.txt
         echo "::set-output name=release_title::$(cat release_title.txt)"
       id: save_release_title
