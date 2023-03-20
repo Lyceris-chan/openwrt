@@ -67,7 +67,7 @@ jobs:
         echo "OpenWrt Git Hash: $openwrt_hash" > release_info.txt
         echo "LuCI Git Hash: $luci_hash" >> release_info.txt
         echo "$feeds_info" >> release_info.txt
-        echo "OpenWrt Git Hash: $openwrt_hash" > release_title.txt
+        echo "$openwrt_hash" > release_title.txt
 
     - name: Save Release Info
       run: |
