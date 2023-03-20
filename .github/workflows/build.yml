@@ -62,6 +62,7 @@ jobs:
       run: |
         cd openwrt
         echo "OpenWrt Git Hash: $(git rev-parse HEAD)" >> release_info.txt
+        echo "OpenWrt Git Hash: $(git rev-parse HEAD)" >> release_title_info.txt
 
     - name: Get LuCI Git Hash
       run: |
@@ -78,27 +79,20 @@ jobs:
         echo "::set-output name=release_info::$(cat release_info.txt)"
       id: save_release_info
 
-    - name: Create Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: |
-          This is a release of OpenWrt firmware for Mercusys MR70X.
-          ${{ steps.save_release_info.outputs.release_info }}
-        draft: false
-        prerelease: false
-      id: create_release
+    - name: Save Release Title Info
+      run: |
+        cat release_title_info.txt
+        echo "::set-output name=release_title_info::$(cat release_title_info.txt)"
+      id: save_release_title_info
 
-    - name: Upload Files to Release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Automatic Release
+      uses: marvinpinto/action-automatic-releases@latest
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: |
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        automatic_release_tag: " MR70X_${{ steps.save_release_info.outputs.release_title_info }}"
+        prerelease: false
+        title: "Development Build"
+        files: |
           openwrt/bin/targets/ramips/mt7621/config.buildinfo
           openwrt/bin/targets/ramips/mt7621/feeds.buildinfo
           openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-initramfs-kernel.bin
