@@ -1,9 +1,7 @@
 name: Build OpenWrt for Mercusys MR70X
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build:
