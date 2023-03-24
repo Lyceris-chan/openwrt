@@ -22,17 +22,6 @@ jobs:
       run: |
         git clone --depth 1 https://github.com/openwrt/openwrt.git
 
-    - name: Set Up Git User
-      run: |
-        git config --global user.email "52329982+Lyceris-chan@users.noreply.github.com"
-        git config --global user.name "Lyceris-chan"
-
-    - name: Add Support for Mercusys MR70X
-      run: |
-        cd openwrt
-        git fetch https://github.com/nicefile/openwrt-vector mr70x
-        git cherry-pick 04b9b13a8de5116a97d79a2f5b18163f799f10aa
-
     - name: Update and Install OpenWrt Feeds
       run: |
         cd openwrt
@@ -43,7 +32,6 @@ jobs:
       run: |
         cd openwrt
         cp -f ../.config .config
-        echo -e 'CONFIG_DEVEL=y\nCONFIG_CCACHE=y' >> .config
 
     - name: Setup cachewrtbuild
       uses: stupidloud/cachewrtbuild@main
