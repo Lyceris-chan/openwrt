@@ -79,10 +79,10 @@ jobs:
         files: |
           openwrt/bin/targets/ramips/mt7621/config.buildinfo
           openwrt/bin/targets/ramips/mt7621/feeds.buildinfo
-          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-initramfs-kernel.bin
-          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-squashfs-factory.bin
-          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-squashfs-sysupgrade.bin
-          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x.manifest
+          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-v1-initramfs-kernel.bin
+          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-v1-squashfs-factory.bin
+          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-v1-squashfs-sysupgrade.bin
+          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-v1.manifest
           openwrt/bin/targets/ramips/mt7621/profiles.json
           openwrt/bin/targets/ramips/mt7621/sha256sums
           openwrt/bin/targets/ramips/mt7621/version.buildinfo
