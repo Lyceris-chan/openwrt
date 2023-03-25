@@ -47,7 +47,7 @@ jobs:
     - name: Get Git Hashes and Feed Info
       run: |
         cd openwrt
-        openwrt_hash=$(git rev-parse HEAD~1)
+        openwrt_hash=$(git rev-parse HEAD)
         luci_hash=$(git -C package/feeds/luci rev-parse HEAD)
         feeds_info=$(cat bin/targets/ramips/mt7621/feeds.buildinfo)
         echo "OpenWrt Git Hash: $openwrt_hash" > release_info.txt
