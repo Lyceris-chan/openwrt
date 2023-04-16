@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Install Dependencies
       run: |
@@ -54,23 +54,21 @@ jobs:
         echo "LuCI Git Hash: $luci_hash" >> release_info.txt
         echo "$feeds_info" >> release_info.txt
         echo "$openwrt_hash" > release_title.txt
-
+      
     - name: Save Release Info
       run: |
         cd openwrt
-        cat release_info.txt
-        echo "::set-output name=release_info::$(cat release_info.txt)"
+        echo "{release_info}={cat release_info.txt}" >> $GITHUB_OUTPUT
       id: save_release_info
-
+      
     - name: Save Release Title
       run: |
         cd openwrt
-        cat release_title.txt
-        echo "::set-output name=release_title::$(cat release_title.txt)"
+        echo "{release_title}={cat release_title.txt}" >> $GITHUB_OUTPUT
       id: save_release_title
 
     - name: Automatic Release
-      uses: marvinpinto/action-automatic-releases@latest
+      uses: maggie0002/actions/packages/automatic-releases@built-packages
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         automatic_release_tag: "MR70X_${{ steps.save_release_title.outputs.release_title }}"
