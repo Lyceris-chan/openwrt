@@ -58,13 +58,13 @@ jobs:
     - name: Save Release Info
       run: |
         cd openwrt
-        echo "{release_info}={cat release_info.txt}" >> $GITHUB_OUTPUT
+        echo "${{ env.release_info }}=$(cat release_info.txt)" >> $GITHUB_STATE
       id: save_release_info
       
     - name: Save Release Title
       run: |
         cd openwrt
-        echo "{release_title}={cat release_title.txt}" >> $GITHUB_OUTPUT
+        echo "${{ env.release_title }}=$(cat release_title.txt)" >> $GITHUB_STATE
       id: save_release_title
 
     - name: Automatic Release
