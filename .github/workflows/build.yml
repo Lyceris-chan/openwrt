@@ -44,44 +44,17 @@ jobs:
         cd openwrt
         make -j "$(nproc)"
 
-    - name: Get Git Hashes and Feed Info
-      run: |
-        cd openwrt
-        openwrt_hash=$(git rev-parse HEAD)
-        luci_hash=$(git -C package/feeds/luci rev-parse HEAD)
-        feeds_info=$(cat bin/targets/ramips/mt7621/feeds.buildinfo)
-        echo "OpenWrt Git Hash: $openwrt_hash" > release_info.txt
-        echo "LuCI Git Hash: $luci_hash" >> release_info.txt
-        echo "$feeds_info" >> release_info.txt
-        echo "$openwrt_hash" > release_title.txt
-      
-    - name: Save Release Info
-      run: |
-        cd openwrt
-        echo "${{ env.release_info }}=$(cat release_info.txt)" >> $GITHUB_STATE
-      id: save_release_info
-      
-    - name: Save Release Title
-      run: |
-        cd openwrt
-        echo "${{ env.release_title }}=$(cat release_title.txt)" >> $GITHUB_STATE
-      id: save_release_title
 
     - name: Automatic Release
       uses: maggie0002/actions/packages/automatic-releases@built-packages
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        automatic_release_tag: "RT-AX53U_${{ steps.save_release_title.outputs.release_title }}"
+        automatic_release_tag: "RT-AX53U"
         prerelease: false
         title: "Development Build"
         files: |
-          openwrt/bin/targets/ramips/mt7621/config.buildinfo
-          openwrt/bin/targets/ramips/mt7621/feeds.buildinfo
           openwrt/bin/targets/ramips/mt7621/openwrt-23.05.3-ramips-mt7621-asus_rt-ax53u-initramfs-kernel.bin
           openwrt/bin/targets/ramips/mt7621/openwrt-23.05.3-ramips-mt7621-asus_rt-ax53u-squashfs-factory.bin
           openwrt/bin/targets/ramips/mt7621/openwrt-23.05.3-ramips-mt7621-asus_rt-ax53u-squashfs-sysupgrade.bin
           openwrt/bin/targets/ramips/mt7621/openwrt-23.05.3-ramips-mt7621-asus_rt-ax53u.manifest
-          openwrt/bin/targets/ramips/mt7621/profiles.json
-          openwrt/bin/targets/ramips/mt7621/sha256sums
-          openwrt/bin/targets/ramips/mt7621/version.buildinfo
-          openwrt/release_info.txt
+
