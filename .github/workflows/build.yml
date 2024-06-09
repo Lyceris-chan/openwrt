@@ -1,4 +1,4 @@
-name: Build OpenWrt for Mercusys MR70X
+name: Build OpenWrt for ASUS RT-AX53U
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Install Dependencies
       run: |
@@ -20,7 +20,7 @@ jobs:
 
     - name: Clone OpenWrt Source Code
       run: |
-        git clone --depth 1 https://github.com/openwrt/openwrt.git
+        git clone --depth 1 --branch v23.05.3 https://github.com/openwrt/openwrt.git
 
     - name: Update and Install OpenWrt Feeds
       run: |
@@ -71,16 +71,16 @@ jobs:
       uses: maggie0002/actions/packages/automatic-releases@built-packages
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        automatic_release_tag: "MR70X_${{ steps.save_release_title.outputs.release_title }}"
+        automatic_release_tag: "RT-AX53U_${{ steps.save_release_title.outputs.release_title }}"
         prerelease: false
         title: "Development Build"
         files: |
           openwrt/bin/targets/ramips/mt7621/config.buildinfo
           openwrt/bin/targets/ramips/mt7621/feeds.buildinfo
-          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-v1-initramfs-kernel.bin
-          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-v1-squashfs-factory.bin
-          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-v1-squashfs-sysupgrade.bin
-          openwrt/bin/targets/ramips/mt7621/openwrt-ramips-mt7621-mercusys_mr70x-v1.manifest
+          openwrt/bin/targets/ramips/mt7621/openwrt-23.05.3-ramips-mt7621-asus_rt-ax53u-initramfs-kernel.bin
+          openwrt/bin/targets/ramips/mt7621/openwrt-23.05.3-ramips-mt7621-asus_rt-ax53u-squashfs-factory.bin
+          openwrt/bin/targets/ramips/mt7621/openwrt-23.05.3-ramips-mt7621-asus_rt-ax53u-squashfs-sysupgrade.bin
+          openwrt/bin/targets/ramips/mt7621/openwrt-23.05.3-ramips-mt7621-asus_rt-ax53u.manifest
           openwrt/bin/targets/ramips/mt7621/profiles.json
           openwrt/bin/targets/ramips/mt7621/sha256sums
           openwrt/bin/targets/ramips/mt7621/version.buildinfo
